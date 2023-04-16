@@ -19,7 +19,7 @@ class Game:
         if id == 0:
             self.active_scene = Menu(self.width, self.height, self.load_scene, self.stop)
         elif id == 1:
-            self.active_scene = Pexeso(40, 100, self.width, self.height, self.load_scene)
+            self.active_scene = Pexeso(20, 200, 100, self.width, self.height, self.load_scene)
 
     def run(self):
         self.running = True
@@ -31,13 +31,13 @@ class Game:
     def loop(self):
         while self.running:
             pos = None
+            self.active_scene.update(pygame.mouse.get_pos())
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     self.active_scene.on_mouse_down(event.pos)
 
-            self.active_scene.update(pygame.mouse.get_pos())
             self.active_scene.draw(self.screen)
 
             pygame.display.flip()

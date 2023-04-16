@@ -1,6 +1,5 @@
 from scene import Scene
 from pygame import Rect
-from pygame import draw
 from pygame import font
 from collections.abc import Callable
 from text_rect import Text_Rect
@@ -20,13 +19,11 @@ class Menu(Scene):
             Text_Rect(button_x, button_y - 0.2*height + self.button_height + 70, self.button_width, self.button_height, "blue", "white", "Konec", self.button_font)
         ]
         self.quit = quit
-        
 
     def draw(self, screen):
         screen.fill("white")
         for x in self.screen_objects:
-            draw.rect(screen, x.background_color, x)
-            screen.blit(x.rendered_text, x.text_pos)
+            x.draw(screen)
         
     def update(self, mouse_pos):
         if self.screen_objects[0].collidepoint(mouse_pos):
