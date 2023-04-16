@@ -12,10 +12,12 @@ class Menu(Scene):
         self.button_height = 50
         self.title_font = font.SysFont("Corbel", 100)
         self.button_font = font.SysFont("Corbel", 35)
+        button_x = (width - self.button_width)/2
+        button_y = (height - self.button_height)/2
         self.screen_objects = [
-            Text_Rect((width - self.button_width)/2 , (height - self.button_height)/2 - 0.2*height, self.button_width, self.button_height, "blue", "white", "Start", self.button_font),
-            Text_Rect((width - self.button_width)/2 , (height - self.button_height)/2 - 2*0.2*height, self.button_width, self.button_height, "white", "blue", "Mega pexeso", self.title_font),
-            Text_Rect((width - self.button_width)/2 , (height - self.button_height)/2 - 0.1*height, self.button_width, self.button_height, "blue", "white", "Konec", self.button_font)
+            Text_Rect(button_x, button_y - 0.2*height + 40, self.button_width, self.button_height, "blue", "white", "Start", self.button_font),
+            Text_Rect(button_x, button_y - 0.2*height - self.button_height - 60, self.button_width, self.button_height, "white", "blue", "Mega pexeso", self.title_font),
+            Text_Rect(button_x, button_y - 0.2*height + self.button_height + 70, self.button_width, self.button_height, "blue", "white", "Konec", self.button_font)
         ]
         self.quit = quit
         
