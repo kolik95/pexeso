@@ -17,7 +17,7 @@ class Pexeso(Scene):
         self.screen_objects = [None] * 64
         self.wrong = False
         self.to_cover = None
-        self.button_font = font.SysFont("Corbel", 35)
+        self.button_font = font.SysFont("Arial", 35)
         pairs = list(range(1, 33)) * 2
         left_offset = (width - 8 * rect_width - 7 * gap)/2
         top_offset = (height - 8 * rect_height - 7 * gap)/2
@@ -68,7 +68,7 @@ class Pexeso(Scene):
                 x.on_hover_leave(x)
             
         if self.wrong:
-            wait(3000)
+            wait(2000)
             self.block_input()
             self.to_cover.cover()
             self.selected.cover()
