@@ -6,7 +6,10 @@ class Scene:
         self.switch_scenes = scene_switch
 
     def on_mouse_down(self, pos):
-        pass
+        for x in self.screen_objects:
+            if x.collidepoint(pos):
+                x.on_click(x)
+                break
 
     def draw(self, screen):
         pass

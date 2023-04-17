@@ -1,8 +1,7 @@
 from scene import Scene
-from pygame import Rect
 from pygame import font
 from collections.abc import Callable
-from text_rect import Text_Rect
+from text_rect import TextRect
 
 class Menu(Scene):
     def __init__(self, width:int, height:int, scene_switch:Callable[[int], None], quit:Callable):
@@ -14,9 +13,9 @@ class Menu(Scene):
         button_x = (width - self.button_width)/2
         button_y = (height - self.button_height)/2
         self.screen_objects = [
-            Text_Rect(button_x, button_y - 0.2*height + 40, self.button_width, self.button_height, "blue", "white", "Start", self.button_font),
-            Text_Rect(button_x, button_y - 0.2*height - self.button_height - 60, self.button_width, self.button_height, "white", "blue", "Mega pexeso", self.title_font),
-            Text_Rect(button_x, button_y - 0.2*height + self.button_height + 70, self.button_width, self.button_height, "blue", "white", "Konec", self.button_font)
+            TextRect(button_x, button_y - 0.2*height + 40, self.button_width, self.button_height, "blue", "white", "Start", self.button_font, self.on_start_click, self.on_button_hover, self.on_button_hover_leave),
+            TextRect(button_x, button_y - 0.2*height - self.button_height - 60, self.button_width, self.button_height, "white", "blue", "Mega pexeso", self.title_font, lambda x: None, lambda x: None, lambda x: None),
+            TextRect(button_x, button_y - 0.2*height + self.button_height + 70, self.button_width, self.button_height, "blue", "white", "Konec", self.button_font, self.on_quit_click, self.on_button_hover, self.on_button_hover_leave)
         ]
         self.quit = quit
 
@@ -25,19 +24,21 @@ class Menu(Scene):
         for x in self.screen_objects:
             x.draw(screen)
         
-    def update(self, mouse_pos):
-        if self.screen_objects[0].collidepoint(mouse_pos):
-            self.screen_objects[0].background_color = "red"
-        else:
-            self.screen_objects[0].background_color = "blue"
-        
-        if self.screen_objects[2].collidepoint(mouse_pos):
-            self.screen_objects[2].background_color = "red"
-        else:
-            self.screen_objects[2].background_color = "blue"
+    def on_button_hover(self, x):
+        x.background_color = "red"
     
-    def on_mouse_down(self, pos):
-        if self.screen_objects[0].collidepoint(pos):
-            self.switch_scenes(1)
-        elif self.screen_objects[2].collidepoint(pos):
-            self.quit()
+    def on_button_hover_leave(self, x):
+        x.background_color = "blue"
+        
+    def update(self, mouse_pos):
+        for x in self.screen_objects:
+            if x.collidepoint(mouse_pos):
+                x.on_hover(x)
+            else:
+                x.on_hover_leave(x)
+
+    def on_start_click(self, x):
+        self.switch_scenes(1)
+
+    def on_quit_click(self, x):
+        self.quit()
