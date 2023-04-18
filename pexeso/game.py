@@ -11,7 +11,7 @@ class Game:
         self.width = res[0]
         self.height = res[1]
         self.caption = caption
-        self.screen = pygame.display.set_mode(res)
+        self.screen = pygame.display.set_mode(res, pygame.SCALED)
         self.clock = pygame.time.Clock()
         self.running = False
         pygame.display.set_caption(caption)
