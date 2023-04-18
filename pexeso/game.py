@@ -1,6 +1,8 @@
 import pygame
 from menu import Menu
 from pexeso import Pexeso
+from threading import Timer
+from functools import partial
 
 class Game:
     def __init__(self, res:tuple[int,int], caption:str, scene_id:int):
@@ -14,13 +16,13 @@ class Game:
         self.running = False
         pygame.display.set_caption(caption)
         self.load_scene(scene_id)
-        self.block_input = False
+        self.waiting = False
 
     def load_scene(self, id):
         if id == 0:
             self.active_scene = Menu(self.width, self.height, self.load_scene, self.stop)
         elif id == 1:
-            self.active_scene = Pexeso(20, 70, 70, self.width, self.height, self.load_scene, self.block)
+            self.active_scene = Pexeso(20, 70, 70, self.width, self.height, self.load_scene, self.non_blocking_wait, self.is_waiting, self.stop_wating)
 
     def run(self):
         self.running = True
@@ -29,8 +31,17 @@ class Game:
     def stop(self):
         self.running = False
 
-    def block(self):
-        self.block_input = True
+    def stop_wating(self, action):
+        action()
+        self.waiting = False
+
+    def is_waiting(self):
+        return self.waiting
+
+    def non_blocking_wait(self, seconds, action):
+        self.waiting = True
+        timer = Timer(seconds, partial(self.stop_wating, action))
+        timer.start()
 
     def loop(self):
         while self.running:
@@ -38,10 +49,6 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
-                
-                if self.block_input:
-                    self.block_input = False
-                    break
         
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:

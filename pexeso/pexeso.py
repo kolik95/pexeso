@@ -2,16 +2,16 @@ from scene import Scene
 from collections.abc import Callable
 from pexeso_rect import PexesoRect
 from random import shuffle
-from os import path
-from pygame.time import wait
 from text_rect import TextRect
 from pygame import font
 
 
 class Pexeso(Scene):
-    def __init__(self, gap:float, rect_width:float, rect_height:float, width:int, height:int, scene_switch:Callable[[int], None], block_input):
+    def __init__(self, gap:float, rect_width:float, rect_height:float, width:int, height:int, scene_switch:Callable[[int], None], wait, is_waiting, stop_waiting):
         super().__init__(scene_switch)
-        self.block_input = block_input
+        self.wait = wait
+        self.stop_waiting = stop_waiting
+        self.is_waiting = is_waiting
         self.stage1 = True
         self.selected = None
         self.screen_objects = [None] * 64
@@ -27,9 +27,13 @@ class Pexeso(Scene):
                 self.screen_objects[i*8 + j] = PexesoRect(left_offset + j * (rect_width+gap), top_offset + i * (rect_height+gap), rect_width, rect_height, pairs[i*8+j], self.on_pexeso_click, lambda x: None, lambda x: None, "blue", "black", str(pairs[i*8 + j]), self.button_font)
         self.screen_objects.append(TextRect(10, 10, 95, 50, "blue", "white", "Zpět", self.button_font, self.open_menu, self.on_button_hover, self.on_button_hover_leave))
         self.screen_objects.append(TextRect(10, 70, 95, 50, "blue", "white", "Znovu", self.button_font, self.reset, self.on_button_hover, self.on_button_hover_leave))
+        self.screen_objects.append(TextRect(width-left_offset+10, 10, 95,50, "white", "blue", "Hraje:", self.button_font))
 
     def on_pexeso_click(self, clicked_rect):
         if clicked_rect.solved:
+            return
+        
+        if self.is_waiting():
             return
         
         if self.stage1:
@@ -67,15 +71,18 @@ class Pexeso(Scene):
             else:
                 x.on_hover_leave(x)
             
-        if self.wrong:
-            wait(2000)
-            self.block_input()
-            self.to_cover.cover()
-            self.selected.cover()
-            self.wrong = False
+        if self.wrong and (not self.is_waiting()):
+            self.wait(2,self.resume_game)
+
+    def resume_game(self):
+        self.to_cover.cover()
+        self.selected.cover()
+        self.wrong = False
 
     def open_menu(self, y):
+        self.stop_waiting(lambda:None)
         self.switch_scenes(0)
 
     def reset(self, x):
+        self.stop_waiting(lambda:None)
         self.switch_scenes(1)
