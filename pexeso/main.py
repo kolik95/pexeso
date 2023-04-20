@@ -1,4 +1,4 @@
-import game
+from game import Game
 
-game = game.Game((1280, 720), "Pexeso", 0)
+game = Game((1280, 720), "Pexeso", 0)
 game.run()
