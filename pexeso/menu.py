@@ -13,9 +13,10 @@ class Menu(Scene):
         button_x = (width - self.button_width)/2
         button_y = (height - self.button_height)/2
         self.screen_objects = [
-            TextRect(button_x, button_y - 0.2*height + 40, self.button_width, self.button_height, "blue", "white", "Start", self.button_font, self.on_start_click, self.on_button_hover, self.on_button_hover_leave),
-            TextRect(button_x, button_y - 0.2*height - self.button_height - 60, self.button_width, self.button_height, "white", "blue", "Mega pexeso", self.title_font, lambda x: None, lambda x: None, lambda x: None),
-            TextRect(button_x, button_y - 0.2*height + self.button_height + 70, self.button_width, self.button_height, "blue", "white", "Konec", self.button_font, self.on_quit_click, self.on_button_hover, self.on_button_hover_leave)
+            TextRect(button_x, button_y - 0.2*height + 40, self.button_width, self.button_height, "blue", "white", "Hra pro jednoho", self.button_font, self.on_1p_click, self.on_button_hover, self.on_button_hover_leave),
+            TextRect(button_x, button_y - 0.2*height + self.button_height + 70, self.button_width, self.button_height, "blue", "white", "Hra pro dva", self.button_font, self.on_2p_click, self.on_button_hover, self.on_button_hover_leave),
+            TextRect(button_x, button_y - 0.2*height - self.button_height - 60, self.button_width, self.button_height, "white", "blue", "Mega pexeso", self.title_font),
+            TextRect(button_x, button_y - 0.2*height + 2*self.button_height + 100, self.button_width, self.button_height, "blue", "white", "Konec", self.button_font, self.on_quit_click, self.on_button_hover, self.on_button_hover_leave)
         ]
         self.quit = quit
 
@@ -37,8 +38,11 @@ class Menu(Scene):
             else:
                 x.on_hover_leave(x)
 
-    def on_start_click(self, x):
+    def on_1p_click(self, x):
         self.switch_scenes(1)
+
+    def on_2p_click(self, x):
+        self.switch_scenes(2)
 
     def on_quit_click(self, x):
         self.quit()

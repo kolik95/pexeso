@@ -9,13 +9,13 @@ from functools import partial
 
 
 class Pexeso(Scene):
-    def __init__(self, gap:float, rect_width:float, rect_height:float, width:int, height:int, scene_switch:Callable[[int], None], wait, is_waiting, stop_waiting):
+    def __init__(self, gap:float, rect_width:float, rect_height:float, width:int, height:int, scene_switch:Callable[[int], None], wait, is_waiting, stop_waiting, multiplayer):
         super().__init__(scene_switch)
         self.wait = wait
         self.stop_waiting = stop_waiting
         self.is_waiting = is_waiting
         self.ai_active = False
-        self.multiplayer = True
+        self.multiplayer = multiplayer
         self.player1_score = 0
         self.player2_score = 0
         self.player1 = True
@@ -44,9 +44,9 @@ class Pexeso(Scene):
 
         #cheat
 
-        for i in range(8):
-            for j in range(8):
-                self.screen_objects[i*8 + j].uncover()
+        #for i in range(8):
+        #    for j in range(8):
+        #        self.screen_objects[i*8 + j].uncover()
 
     def on_pexeso_click(self, clicked_rect):
         if clicked_rect.solved:
@@ -129,6 +129,8 @@ class Pexeso(Scene):
 
     def ai_turn(self):
         pick1, pick2 = sample(self.available_rects, 2)
+        #pick1 = self.available_rects[0]
+        #pick2 = list(filter(lambda x: x.pair_id == self.screen_objects[pick1].pair_id and x.rect_id != self.screen_objects[pick1].rect_id, self.screen_objects[:64]))[0].rect_id
         self.screen_objects[pick1].uncover()
         self.screen_objects[pick2].uncover()
         self.wait(2, partial(self.ai_turn_end, pick1, pick2))
@@ -143,10 +145,13 @@ class Pexeso(Scene):
 
             self.screen_objects[pick1].solved = True
             self.screen_objects[pick2].solved = True
+
+            if len(self.available_rects) > 0:
+                self.wait(0.5, self.ai_turn)
         else:
             self.screen_objects[pick1].cover()
             self.screen_objects[pick2].cover()
-
-        self.ai_active = False
-        self.player1 = True
-        self.update_current_player()
+            self.ai_active = False
+            self.player1 = True
+            self.update_current_player()
+        

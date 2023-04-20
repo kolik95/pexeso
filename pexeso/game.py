@@ -22,7 +22,10 @@ class Game:
         if id == 0:
             self.active_scene = Menu(self.width, self.height, self.load_scene, self.stop)
         elif id == 1:
-            self.active_scene = Pexeso(20, 70, 70, self.width, self.height, self.load_scene, self.non_blocking_wait, self.is_waiting, self.stop_wating)
+            self.active_scene = Pexeso(20, 70, 70, self.width, self.height, self.load_scene, self.non_blocking_wait, self.is_waiting, self.stop_wating, False)
+        elif id == 2:
+            self.active_scene = Pexeso(20, 70, 70, self.width, self.height, self.load_scene, self.non_blocking_wait, self.is_waiting, self.stop_wating, True)
+
 
     def run(self):
         self.running = True
