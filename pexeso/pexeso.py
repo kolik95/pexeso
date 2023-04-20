@@ -11,25 +11,27 @@ from functools import partial
 class Pexeso(Scene):
     def __init__(self, gap:float, rect_width:float, rect_height:float, width:int, height:int, scene_switch:Callable[[int], None], wait, is_waiting, stop_waiting, multiplayer):
         super().__init__(scene_switch)
-        self.wait = wait
-        self.stop_waiting = stop_waiting
-        self.is_waiting = is_waiting
-        self.ai_active = False
-        self.multiplayer = multiplayer
-        self.player1_score = 0
-        self.player2_score = 0
-        self.player1 = True
-        self.stage1 = True
-        self.selected = None
+        self.wait = wait # Neblokující funkce na čekání
+        self.stop_waiting = stop_waiting # Ihned zruší čekání
+        self.is_waiting = is_waiting # Vrátí True pokud program čeká
+        self.ai_active = False # True pokud je na tahu AI
+        self.multiplayer = multiplayer # True pokud je hra pro 2 hráče
+        self.player1_score = 0 # Skóre prvního hráče
+        self.player2_score = 0 # Skóre druhého hráče
+        self.player1 = True # True pokud je na tahu hráč 1
+        self.stage1 = True # True pokud se tahá 1. karta
+        self.selected = None # 1. zvolená karta v tahu hráče
         self.screen_objects = [None] * 64
-        self.wrong = False
-        self.to_cover = None
+        self.wrong = False # True pokud byl zvolen špatný pár karet
+        self.to_cover = None # Karta kterou je třeba zakrýt po skončení tahu
         self.button_font = font.SysFont("Arial", 35)
-        self.available_rects = list(range(0,64))
+        self.available_rects = list(range(0,64)) # Všechny karty které ještě nebyly uhádnuty
         pairs = list(range(1, 33)) * 2
         left_offset = (width - 8 * rect_width - 7 * gap)/2
         top_offset = (height - 8 * rect_height - 7 * gap)/2
         shuffle(pairs)
+
+        #Tvorba prvků UI
         for i in range(8):
             for j in range(8):
                 self.screen_objects[i*8 + j] = PexesoRect(left_offset + j * (rect_width+gap), top_offset + i * (rect_height+gap), rect_width, rect_height, pairs[i*8+j], self.on_pexeso_click, lambda x: None, lambda x: None, "blue", "black", str(pairs[i*8 + j]), self.button_font, i*8+j)
@@ -48,6 +50,7 @@ class Pexeso(Scene):
         #    for j in range(8):
         #        self.screen_objects[i*8 + j].uncover()
 
+    # Zpracovává kliknutí na kartičku pexesa
     def on_pexeso_click(self, clicked_rect):
         if clicked_rect.solved:
             return
@@ -82,6 +85,7 @@ class Pexeso(Scene):
                 self.available_rects.remove(clicked_rect.rect_id)
                 self.available_rects.remove(self.selected.rect_id)
 
+    # Aktualizuje informaci o aktuálním hráči na obrazovce
     def update_current_player(self):
         if self.player1:
             self.screen_objects[-5].update_text("Hráč 1")
@@ -92,41 +96,40 @@ class Pexeso(Scene):
         x.background_color = "red"
 
     def on_button_hover_leave(self, x):
-        x.background_color = "blue"
+        x.background_color = "blue"    
 
-    def draw(self, screen):
-        screen.fill("white")
-        for x in self.screen_objects:
-            x.draw(screen)
-
+    # Aktualizuje stav hry
     def update(self, mouse_pos):
-        for x in self.screen_objects:
-            if x.collidepoint(mouse_pos):
-                x.on_hover(x)
-            else:
-                x.on_hover_leave(x)
+        super().update(mouse_pos)
             
+        # Probíha po nesprávném tahu
         if self.wrong and (not self.is_waiting()):
             self.wait(2,self.resume_game)
 
+    # Obnoví chod hry po chybném tahu
     def resume_game(self):
         self.to_cover.cover()
         self.selected.cover()
         self.wrong = False
         self.player1 = not self.player1
         self.update_current_player()
+
+        # Ve hře pro jednoho předá tah AI
         if not self.player1 and not self.multiplayer:
             self.ai_active = True
             self.wait(0.5, self.ai_turn)
 
+    # Otevře hlavní menu
     def open_menu(self, y):
         self.stop_waiting(lambda:None)
         self.switch_scenes(0)
 
+    # Resetuje průběh hry
     def reset(self, x):
         self.stop_waiting(lambda:None)
         self.switch_scenes(1)
 
+    # První část tahu Ai
     def ai_turn(self):
         pick1, pick2 = sample(self.available_rects, 2)
         #pick1 = self.available_rects[0]
@@ -135,6 +138,7 @@ class Pexeso(Scene):
         self.screen_objects[pick2].uncover()
         self.wait(2, partial(self.ai_turn_end, pick1, pick2))
 
+    # Druhá část tahu AI
     def ai_turn_end(self, pick1, pick2):
         if self.screen_objects[pick1].pair_id == self.screen_objects[pick2].pair_id:
             self.available_rects.remove(pick1)

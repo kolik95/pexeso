@@ -7,22 +7,26 @@ from functools import partial
 class Game:
     def __init__(self, res:tuple[int,int], caption:str, scene_id:int):
         pygame.init()
-        self.active_scene = None
-        self.width = res[0]
-        self.height = res[1]
-        self.caption = caption
+        self.active_scene = None # Scéna která se právě zobrazuje
+        self.width = res[0] # šiřka okna
+        self.height = res[1] # výška okna
+        self.caption = caption # titulek okna
         self.screen = pygame.display.set_mode(res, pygame.SCALED)
         self.clock = pygame.time.Clock()
-        self.running = False
+        self.running = False # True pokud hra běží
         pygame.display.set_caption(caption)
         self.load_scene(scene_id)
         self.waiting = False
 
+    # Načte novou scénu
     def load_scene(self, id):
+        # Hlavní menu
         if id == 0:
             self.active_scene = Menu(self.width, self.height, self.load_scene, self.stop)
+        # Hra pro jednoho hráče
         elif id == 1:
             self.active_scene = Pexeso(20, 70, 70, self.width, self.height, self.load_scene, self.non_blocking_wait, self.is_waiting, self.stop_wating, False)
+        # Hra pro dva hráče
         elif id == 2:
             self.active_scene = Pexeso(20, 70, 70, self.width, self.height, self.load_scene, self.non_blocking_wait, self.is_waiting, self.stop_wating, True)
 
@@ -34,6 +38,7 @@ class Game:
     def stop(self):
         self.running = False
 
+    # Zakončí čekání
     def stop_wating(self, action):
         action()
         self.waiting = False
@@ -41,11 +46,13 @@ class Game:
     def is_waiting(self):
         return self.waiting
 
+    # Čekání které neblokuje běh programu
     def non_blocking_wait(self, seconds, action):
         self.waiting = True
         timer = Timer(seconds, partial(self.stop_wating, action))
         timer.start()
 
+    # Zde probíhá celá hra
     def loop(self):
         while self.running:
             self.active_scene.update(pygame.mouse.get_pos())

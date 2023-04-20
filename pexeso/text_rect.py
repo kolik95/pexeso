@@ -8,11 +8,18 @@ class TextRect(ActionRect):
         self.font = font
         self.text_color = text_color
         self.background_color = background
+
+        # umístění textu doprostřed obdélníku
         self.text_pos = self.x + (self.width - self.rendered_text.get_rect().width)/2, self.y + (self.height - self.rendered_text.get_rect().height)/2
 
     def draw(self, screen):
         draw.rect(screen, self.background_color, self)
         screen.blit(self.rendered_text, self.text_pos)
 
+    # Aktualizuje zobrazovaný text
     def update_text(self, text):
-        self.rendered_text = self.font.render(str(text), True, self.text_color)
+        # Tento kód občas hodí výjimku při zavírání aplikace
+        try:
+            self.rendered_text = self.font.render(str(text), True, self.text_color)
+        except:
+            pass

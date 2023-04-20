@@ -20,23 +20,11 @@ class Menu(Scene):
         ]
         self.quit = quit
 
-    def draw(self, screen):
-        screen.fill("white")
-        for x in self.screen_objects:
-            x.draw(screen)
-        
     def on_button_hover(self, x):
         x.background_color = "red"
     
     def on_button_hover_leave(self, x):
         x.background_color = "blue"
-        
-    def update(self, mouse_pos):
-        for x in self.screen_objects:
-            if x.collidepoint(mouse_pos):
-                x.on_hover(x)
-            else:
-                x.on_hover_leave(x)
 
     def on_1p_click(self, x):
         self.switch_scenes(1)
