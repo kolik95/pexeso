@@ -12,10 +12,10 @@ class Pexeso(Scene):
     def __init__(self, gap:float, rect_width:float, rect_height:float, width:int, height:int, scene_switch:Callable[[int], None], wait, is_waiting, stop_waiting, multiplayer):
         super().__init__(scene_switch)
         self.wait = wait # Neblokující funkce na čekání
-        self.stop_waiting = stop_waiting # Ihned zruší čekání
+        self.stop_waiting = stop_waiting # Ihned ukončí čekání
         self.is_waiting = is_waiting # Vrátí True pokud program čeká
         self.ai_active = False # True pokud je na tahu AI
-        self.multiplayer = multiplayer # True pokud je hra pro 2 hráče
+        self.multiplayer = multiplayer # True pokud se hraje hra pro 2 hráče
         self.player1_score = 0 # Skóre prvního hráče
         self.player2_score = 0 # Skóre druhého hráče
         self.player1 = True # True pokud je na tahu hráč 1
@@ -27,8 +27,8 @@ class Pexeso(Scene):
         self.button_font = font.SysFont("Arial", 35)
         self.available_rects = list(range(0,64)) # Všechny karty které ještě nebyly uhádnuty
         pairs = list(range(1, 33)) * 2
-        left_offset = (width - 8 * rect_width - 7 * gap)/2
-        top_offset = (height - 8 * rect_height - 7 * gap)/2
+        left_offset = (width - 8 * rect_width - 7 * gap)*0.5
+        top_offset = (height - 8 * rect_height - 7 * gap)*0.5
         shuffle(pairs)
 
         #Tvorba prvků UI
@@ -121,15 +121,18 @@ class Pexeso(Scene):
 
     # Otevře hlavní menu
     def open_menu(self, y):
-        self.stop_waiting(lambda:None)
+        self.stop_waiting(lambda: None)
         self.switch_scenes(0)
 
     # Resetuje průběh hry
     def reset(self, x):
-        self.stop_waiting(lambda:None)
-        self.switch_scenes(1)
+        self.stop_waiting(lambda: None)
+        if self.multiplayer:
+            self.switch_scenes(2)
+        else:
+            self.switch_scenes(1)
 
-    # První část tahu Ai
+    # První část tahu AI
     def ai_turn(self):
         pick1, pick2 = sample(self.available_rects, 2)
         #pick1 = self.available_rects[0]

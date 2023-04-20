@@ -10,7 +10,7 @@ class TextRect(ActionRect):
         self.background_color = background
 
         # umístění textu doprostřed obdélníku
-        self.text_pos = self.x + (self.width - self.rendered_text.get_rect().width)/2, self.y + (self.height - self.rendered_text.get_rect().height)/2
+        self.text_pos = self.x + (self.width - self.rendered_text.get_rect().width)*0.5, self.y + (self.height - self.rendered_text.get_rect().height)*0.5
 
     def draw(self, screen):
         draw.rect(screen, self.background_color, self)
