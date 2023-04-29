@@ -35,8 +35,8 @@ class Pexeso(Scene):
         for i in range(8):
             for j in range(8):
                 self.screen_objects[i*8 + j] = PexesoRect(left_offset + j * (rect_width+gap), top_offset + i * (rect_height+gap), rect_width, rect_height, pairs[i*8+j], self.on_pexeso_click, lambda x: None, lambda x: None, "blue", "black", str(pairs[i*8 + j]), self.button_font, i*8+j)
-        self.screen_objects.append(TextRect(10, 10, 100, 50, "blue", "white", "Zpět", self.button_font, self.open_menu, self.on_button_hover, self.on_button_hover_leave))
-        self.screen_objects.append(TextRect(10, 70, 100, 50, "blue", "white", "Znovu", self.button_font, self.reset, self.on_button_hover, self.on_button_hover_leave))
+        self.screen_objects.append(TextRect(10, 10, 120, 50, "blue", "white", "Zpět", self.button_font, self.open_menu, self.on_button_hover, self.on_button_hover_leave))
+        self.screen_objects.append(TextRect(10, 70, 120, 50, "blue", "white", "Znovu", self.button_font, self.reset, self.on_button_hover, self.on_button_hover_leave))
         self.screen_objects.append(TextRect(width-left_offset+20, 10, 95, 50, "white", "blue", "Hraje:", self.button_font))
         self.screen_objects.append(TextRect(width-left_offset+20, 70, 95, 50, "white", "blue", "Hráč 1", self.button_font))
         self.screen_objects.append(TextRect(width-left_offset+20, height-160, 95, 50, "white", "blue", "Hráč 1:", self.button_font))
