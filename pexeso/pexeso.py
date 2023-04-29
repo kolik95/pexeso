@@ -58,19 +58,23 @@ class Pexeso(Scene):
         if self.is_waiting() or self.ai_active:
             return
         
+        # Odkryta první karta
         if self.stage1:
             clicked_rect.uncover()
             self.stage1 = False
             self.selected = clicked_rect
+        # Odkryta druhá karta
         else:
             if clicked_rect == self.selected:
                 return
             
             self.stage1 = True
             clicked_rect.uncover()
+            # Kartičky se neshodují
             if clicked_rect.pair_id != self.selected.pair_id:
                 self.wrong = True
                 self.to_cover = clicked_rect
+            # Kartičky se shodují
             else:
                 if self.player1:
                     self.player1_score += 1
@@ -135,8 +139,9 @@ class Pexeso(Scene):
     # První část tahu AI
     def ai_turn(self):
         pick1, pick2 = sample(self.available_rects, 2)
-        #pick1 = self.available_rects[0]
-        #pick2 = list(filter(lambda x: x.pair_id == self.screen_objects[pick1].pair_id and x.rect_id != self.screen_objects[pick1].rect_id, self.screen_objects[:64]))[0].rect_id
+        # Extrémní obtížnost
+        # pick1 = self.available_rects[0]
+        # pick2 = list(filter(lambda x: x.pair_id == self.screen_objects[pick1].pair_id and x.rect_id != self.screen_objects[pick1].rect_id, self.screen_objects[:64]))[0].rect_id
         self.screen_objects[pick1].uncover()
         self.screen_objects[pick2].uncover()
         self.wait(2, partial(self.ai_turn_end, pick1, pick2))
