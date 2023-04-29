@@ -1,6 +1,6 @@
 # Technický popis
 
-Kód je strukturován do několika tříd, které jsou v příslušných souborech. Výjimkou je soubor *main.py*, který pouze spouští hru. Nepopisuji jednotlivé funkce a proměnné, protože z kódu je patrné, co dělají.
+Kód je strukturován do několika tříd, které jsou v příslušných souborech. Výjimkou je soubor *main.py*, který pouze spouští hru. Nepopisuji jednotlivé funkce a proměnné, protože z kódu je patrné, co dělají. Jediná použitá externí knihovna je PyGame.
 
 ## Game
 
@@ -20,7 +20,7 @@ Reprezentuje scénu, kde se odehrává hra pexesa.
 
 ## Action rect
 
-Action rect je rozšířením třídy Rect z Pygame, které reaguje na myš a umí samo sebe vykreslit.
+Action rect je rozšířením třídy Rect z PyGame, které reaguje na myš a umí samo sebe vykreslit.
 
 ## Text rect
 
